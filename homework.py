@@ -1,5 +1,6 @@
 import psycopg2
 import configparser
+import pprint
 
 
 def drop_tables(cur):

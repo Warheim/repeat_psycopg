@@ -30,6 +30,13 @@ def create_tables(cur):
     conn.commit()
 
 
+def add_customer(cur, first_name, last_name, email=None):
+    cur.execute("""
+    INSERT INTO Customer(first_name, last_name, email) VALUES (%s, %s, %s);
+    """, (first_name, last_name, email))
+    conn.commit()
+
+
 if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read('settings.ini')
@@ -37,4 +44,5 @@ if __name__ == '__main__':
     with conn.cursor() as cursor:
         drop_tables(cursor)
         create_tables(cursor)
+        add_customer(cursor, 'John', 'Doe', 'strange@gmail.com')
     conn.close()

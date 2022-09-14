@@ -112,43 +112,31 @@ def delete_customer(cur, customer_id):
 
 
 def find_customer(cur, first_name=None, last_name=None, email=None, phone_number=None):
-    cur.execute("""
-    SELECT * FROM Customer c
-    JOIN Phonebook p on c.id = p.customer_id
-    WHERE email = %s;
-    """, (email,))
-    if not cur.fetchall():
+    if email is not None:
         cur.execute("""
-        SELECT * FROM Customer c
-        JOIN Phonebook p on c.id = p.customer_id
+        SELECT * FROM Customer
+        JOIN phonebook p on customer.id = p.customer_id
+        WHERE email = %s;
+        """, (email,))
+    elif email is not None:
+        cur.execute("""
+        SELECT * FROM Customer
+        JOIN phonebook p on customer.id = p.customer_id
         WHERE phone_number = %s;
         """, (phone_number,))
-        if not cur.fetchall():
-            cur.execute("""
-            SELECT * FROM Customer c
-            JOIN Phonebook p on c.id = p.customer_id
-            WHERE first_name = %s AND last_name = %s;
-            """, (first_name, last_name))
-            if not cur.fetchall():
-                cur.execute("""
-                SELECT * FROM Customer c
-                JOIN Phonebook p on c.id = p.customer_id
-                WHERE last_name = %s;
-                """, (last_name,))
-                if not cur.fetchall():
-                    cur.execute("""
-                    SELECT * FROM Customer c
-                    JOIN Phonebook p on c.id = p.customer_id
-                    WHERE first_name = %s;
-                    """, (first_name,))
-                else:
-                    print(cur.fetchall())
-            else:
-                print(cur.fetchall())
-        else:
-            print(cur.fetchall())
-    else:
-        print(cur.fetchall())
+    elif email is not None:
+        cur.execute("""
+        SELECT * FROM Customer
+        JOIN phonebook p on customer.id = p.customer_id
+        WHERE last_name = %s;
+        """, (last_name,))
+    elif email is not None:
+        cur.execute("""
+        SELECT * FROM Customer
+        JOIN phonebook p on customer.id = p.customer_id
+        WHERE first_name = %s;
+        """, (first_name,))
+    print(cur.fetchone())
 
 
 if __name__ == '__main__':
@@ -168,5 +156,5 @@ if __name__ == '__main__':
         # update_info(cursor, 2, 'And', 'You', None, '987412365', None)
         # delete_phone_number(cursor, '987412365')
         # delete_customer(cursor, 2)
-        find_customer(cursor, 'John', 'Doe', 'somebody@buddy.com')
+        find_customer(cursor, first_name=None, last_name='Doe', email='somebody@buddy.com', phone_number='777-9-777')
     conn.close()
